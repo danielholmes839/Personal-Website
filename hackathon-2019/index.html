@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Hackathon 2019</title>
+  <!-- Boostrap CSS -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="slider.css">
+</head>
+
+  
+<body class="bg-dark">
+  <!-- Nav Bar -->
+  <nav class="navbar navbar-expand-lg bg-black py-4">
+    <div class="d-flex justify-content-between container w-75">
+        <div>
+          <h2><code class="text-primary font-weight-bold m-2">Hackathon 2019</code></h2>
+        </div>
+          
+        <div>
+          <h2><code class="text-primary font-weight-bold m-2">document.write("Team Name")</code></h2>
+        </div>
+
+        <div>
+          <h2 class="text-primary font-weight-bold m-2"><a href="../index.html">danielholmes.ca</a></h2>
+        </div>
+    </div> 
+   </nav>
+  
+  <!-- GUI and Canvas -->
+  <div class="container d-flex justify-content-center py-3 mt-4">   
+    <div class="column">
+      
+      <!-- GUI -->
+      <div class="row">
+        <div class="container-fluid bg-black p-3">
+          <div class="d-flex flex-wrap justify-content-between">
+            
+            <div class="d-inline-flex btn btn-primary text-black">
+              <p class="m-0 mr-1">Deaths:</p>
+              <p class="m-0" id="deaths-g">0</p>
+            </div>
+
+            <div class="d-inline-flex btn btn-primary text-black">
+              <p class="m-0 mr-1">Layer: </p>
+              <p class="m-0" id="layer-g">0/0</p>
+            </div>
+
+            <div class="d-inline-flex btn btn-primary text-black">
+              <p class="m-0 mr-1">Goals: </p>
+              <p class="m-0" id="keys-g">0/0</p>
+            </div>
+            
+            <div class="d-inline-flex btn btn-primary text-black">
+              <p class="m-0 mr-1">Time:</p>
+              <p class="m-0" id="time-g">00:00</p>
+            </div>
+            
+            <div><button class="btn btn-primary text-black" data-toggle="modal" data-target="#settings-modal">Settings</button></div>
+            <div><button class="btn btn-primary text-black" data-toggle="modal" data-target="#new-game-modal">New Game</button></div>
+          </div>
+        </div> 
+      </div>
+
+      <!-- Canvas -->
+      <div class="row">
+        <canvas id="game" class="border border-primary bg-black"></canvas>
+      </div>
+
+      <div class="row justify-content-between bg-black py-3">
+        <div class="col">
+          <button class="btn btn-block btn-secondary text-white" onclick="stop_game()">Stop Game</button>
+        </div>
+        
+        <div class="col">
+          <button class="btn btn-block btn-secondary text-white" onclick="maze_solver.toggle_show_nodes()">Toggle Nodes</button>
+        </div>
+
+        <div class="col">
+          <button class="btn btn-block btn-secondary text-white" onclick="maze_solver.toggle_show_solutions()">Toggle Solution</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+
+
+  <!-- Controls -->
+  <div class="container-fluid my-3 py-5 bg-black">
+    <div class="container">
+      <h2><code class="text-primary font-weight-bold">Controls</code></h2>
+    </div>
+
+    <div class="container justify-content-center">
+      <ul class="list-group font-weight-bold text-white">
+        <li class="list-group-item bg-gradient-secondary my-1">WASD - Movement</li>
+        <li class="list-group-item bg-gradient-secondary my-1">R - Rotate</li>
+        <li class="list-group-item bg-gradient-secondary my-1">F - Horizontal flip</li>
+        <li class="list-group-item bg-gradient-secondary my-1">C - Vertical flip</li>
+        <li class="list-group-item bg-gradient-secondary my-1">E - Interact</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid my-3 py-5 bg-dark">
+    <div class="container">
+      <h2><code class="text-primary font-weight-bold">Getting Help</code></h2>
+    </div>
+
+    <div class="container justify-content-center">
+      <ul class="list-group font-weight-bold text-white">
+        <li class="list-group-item bg-gradient-secondary my-1">Kids Help Phone 1-800-668-6868</li>
+        <li class="list-group-item bg-gradient-secondary my-1">Canada Suicide Prevention 1-833-456-4566</li>
+        <li class="list-group-item bg-gradient-secondary my-1">Kids help phone texting services TALK to 686868 (english), TEXTO to 686868(french)</li>
+        <li class="list-group-item bg-gradient-secondary my-1"><a href="https://www.ysb.ca/" class="text-white">Youth Services Bureau of Ottawa 613-260-2360</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid my-3 py-5 bg-dark">
+    <div class="container">
+      <h2><code class="text-primary font-weight-bold">Team Members</code></h2>
+    </div>
+
+    <div class="container justify-content-center">
+      <ul class="list-group font-weight-bold text-white">
+        <li class="list-group-item bg-gradient-secondary my-1">Art - Agnes Nam, Aaron McAfee, Emily Webb</li>
+        <li class="list-group-item bg-gradient-secondary my-1">Music and Sound - John Swayty</li>
+        <li class="list-group-item bg-gradient-secondary my-1">Code - Daniel Holmes</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- Level completed popup -->
+  <div class="modal fade" id="level-complete-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Level Complete!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container">
+
+            <div class="row">
+              <div class="d-inline-flex">
+                <p class="mr-1">Goals:</p>
+                <p id="keys-c"></p>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="d-inline-flex">
+                <p class="mr-1">Deaths:</p>
+                <p id="deaths-c"></p>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="d-inline-flex">
+                <p class="mr-1">Time:</p>
+                <p id="time-c"></p>
+              </div> 
+            </div>
+          
+
+            <div class="row">
+              <button onclick="modalTransition();" class="btn btn-block btn-easy">Play Again!</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-center">
+          <button class="btn btn-block btn-light text-black" data-dismiss="modal">Thanks for playing!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New game popup -->
+  <div class="modal fade" id="new-game-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-black" id="exampleModalLongTitle">New Game</h5>
+        </div>
+        
+        <div class="modal-body">
+          <div class="row">
+            
+            <div class="col">
+              <button onclick="new_game(0);" class="btn btn-block btn-easy" data-toggle="modal" data-target="#new-game-modal">Easy</button>
+            </div>
+            
+            <div class="col">
+              <button onclick="new_game(1);" class="btn btn-block btn-medium" data-toggle="modal" data-target="#new-game-modal">Medium</button>
+            </div>
+            
+            <div class="col">
+              <button onclick="new_game(2);" class="btn btn-block btn-hard" data-toggle="modal" data-target="#new-game-modal">Hard</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-block btn-light text-black" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- Settings popup -->
+  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-black" id="exampleModalLongTitle">Settings</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <code class="text-secondary font-weight-bold w-50">Music Volume</code>
+              <input class="slider w-50" id="music-volume-slider" oninput="update_music_volume();" type="range" min="0" max="100" value="50">
+            </div>
+
+            <div class="row">
+              <code class="text-secondary font-weight-bold w-50">Sound Effects Volume</code>
+              <input class="slider w-50" id="sound-volume-slider" oninput="update_sound_volume();" type="range" min="0" max="100" value="50">
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-block btn-light text-black" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+
+
+<script type="text/javascript" src="js/Player.js"></script>
+
+<script type="text/javascript" src="js/GlobalVariables.js"></script>
+<script type="text/javascript" src="js/HitboxFunctions.js"></script>
+
+<script type="text/javascript" src="js/Enemy.js"></script>
+<script type="text/javascript" src="js/ChaseEnemy.js"></script>
+<script type="text/javascript" src="js/FallTrap.js"></script>
+<script type="text/javascript" src="js/TimeTrap.js"></script>
+
+<script type="text/javascript" src="js/Wall.js"></script>
+<script type="text/javascript" src="js/Key.js"></script>
+
+<script type="text/javascript" src="js/SpawnPoint.js"></script>
+<script type="text/javascript" src="js/Exit.js"></script>
+<script type="text/javascript" src="js/Ladder.js"></script>
+
+<script type="text/javascript" src="js/SelectTool.js"></script>
+
+<script type="text/javascript" src="js/MazeGenerator.js"></script>
+<script type="text/javascript" src="js/LevelGenerator.js"></script>
+<script type="text/javascript" src="js/Level.js"></script>
+<script type="text/javascript" src="js/MazeSolver.js"></script>
+
+<script type="text/javascript" src="js/Game.js"></script>
+<script type="text/javascript" src="js/Events.js"></script>
+
+<script type="text/javascript" src="js/GUI.js"></script>
+<script type="text/javascript" src="js/Timer.js"></script>
+
+<script type="text/javascript" src="js/GeneralDrawing.js"></script>
+<script type="text/javascript" src="js/Audio.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</html>
+
+

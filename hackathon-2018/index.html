@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<p hidden> 
+    <img id="character" width="32" height="32"
+         src="https://i.imgur.com/fd34r4F.png" alt="character">
+    
+    <img id="barrelU" width="32" height="32"
+         src="https://imgur.com/WHhCKZK.png" alt="barrel">
+    <img id="barrelD" width="32" height="32"
+         src="https://i.imgur.com/PWHXfr0.png" alt="barrel">
+    <img id="barrelR" width="32" height="32"
+         src="https://i.imgur.com/yyAtMCC.png" alt="barrel">
+    <img id="barrelL" width="32" height="32"
+         src="https://i.imgur.com/Hv3i7gZ.png" alt="barrel">
+    
+    <img id="ledgeU" width="32" height="32"
+         src="https://i.imgur.com/1MKZ7ip.png" alt="ledge">
+    <img id="ledgeD" width="32" height="32"
+         src="https://i.imgur.com/zYjQx6A.png" alt="ledge">
+    <img id="ledgeR" width="32" height="32"
+         src="https://i.imgur.com/GmjjaKj.png" alt="ledge">
+    <img id="ledgeL" width="32" height="32"
+         src="https://i.imgur.com/pUY2CDG.png" alt="ledge">
+  
+  
+    <img id="grass" width="32" height="32"
+         src="https://i.imgur.com/ODKTzB9.png" alt="grass">
+    <img id="brick" width="32" height="32"
+         src="https://i.imgur.com/2YohWgC.png" alt="brick">
+  
+    <img id="cloud" width="32" height="32"
+         src="https://i.imgur.com/RVASaci.png" alt="cloud">
+         
+    <img id="projectile" width="32" height="32"
+         src="https://i.imgur.com/JnEjrEs.png" alt="projectile">
+    
+    <img id="enemy" width="32" height="32"
+         src="https://i.imgur.com/zMhIrwl.png" alt="enemy">
+    
+    <img id="garbage" width="32" height="32"
+         src="https://i.imgur.com/y61gtKo.png" alt="garbage">
+  	
+    <img id="globe" width="320" height="210"
+           src="https://i.imgur.com/rxFaZZa.png" alt="globe">
+    
+  	<img id="menuScreen" width="960" height="960"
+         src="https://i.imgur.com/foiFmbe.jpg" alt="menuScreen">
+  </p>
+
+
+
+<html>
+    <style>
+   
+      html {
+        width: 100%;
+        height: 100%;
+        
+      }
+
+      body {
+        width: 100%;
+        height: 100%;
+   			
+        text-align: center;
+        font-family: "Arial Black", Gadget, sans-serif;
+       	background-image: url("https://i.imgur.com/w0smDdB.png");
+        background-color: #558000;
+        
+        color: white;
+      }
+
+      a {
+        color: white;
+      }
+      
+      canvas {
+        display: block;
+        margin: auto;
+        border-color: black;
+        border-style: solid;
+        border-width: 2px;
+        border-style: double;
+      }
+      
+      button {
+        display: line;
+        color: white;
+        margin: auto;
+        font: 30px Impact, sans-serif;
+        padding: 10px 10px;
+        background-color: green; 
+        border-radius: 12px;
+        
+      }
+      
+      button:hover {
+    		background-color: olive;
+			}
+
+      #textures {
+        position: relative;
+      }
+
+      #textures li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        top: 0;
+      }
+
+      #textures li,
+      #textures a {
+        height: 30px;
+        width: 30px;
+        display: block;
+      }
+
+      #testImage {
+        background: url('https://imgur.com/gdQFgv5') 0, 0;
+
+      }
+    </style>
+  
+  
+  <div>
+    <head>
+      <title>Hackathon 2018</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+  </div>
+  
+  <body onload="startGame()">
+  
+  <button onclick="if(menu !== true && levelNum !== levels.length+1){changeLevel()}">Skip level</button>
+  <h1><a href="../index.html">danielholmes.ca</a></h1>
+  <p>Team: Daniel, Emily, Graham, Hailey, Hani and Nick<p>
+  <script>
+
+      var Player; // Player Variable -Emily
+
+      var menu = true; // flag for menu
+      var game = false; // Flag for game loop
+     
+
+      function startGame() { // This function starts the game -Emily
+        Player = new component(32, 32, "yellow", 0, 0, 5); // The Player var is set as a new component with: width, height, color, x coord, y coord -Emily
+        changeLevel()
+        levelArea.start(); // Starts the level area -Emily
+      	}
+      
+      var levelArea = { // sets the level area's characteristics -Emily      
+        canvas: document.createElement("canvas"), // creatas the canvas -Emily     
+        start: function() { // Establishes the start function -Emily 
+          
+          this.canvas.width = 960; // Sets the width of the canvas -Emily
+          this.canvas.height = 1060; // Sets the height of the canvas -Emily
+          this.context = this.canvas.getContext("2d"); // the canvas is set as 2D -Emily
+          
+          document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+       		this.interval = setInterval(updateLevelArea, 20); // sets the interval for the level to refresh every 20th millisecond -Emily
+                    
+          window.addEventListener('keydown', function(e) { // This creates an event listener that looks for when keys are pressed down -Emily           
+            levelArea.keys = (levelArea.keys || []); // this line sets the the keys as either the already listed keys or the array -Emily
+            levelArea.keys[e.keyCode] = true; // when keys are pressed this is true and will allow movement -Emily
+          })
+          
+          window.addEventListener('keyup', function(e) { // this event listener is to detect the unpressing of a key so that we can stop movement -Emily
+            levelArea.keys[e.keyCode] = false; // when keys are unpressed this will be false and the movement will cease -Emily
+          })
+        },
+        
+        clear: function() { // This function clears the canvas -Emily
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // clears the canvas using the height and width starting at the origin -Emily
+        }
+      }
+			
+      function chasing_enemy(x,y,range) { //acid clouds
+      this.x = x //position
+      this.y = y
+      
+      this.height = 32 //size
+      this.width = 32
+      
+      this.speedX = 1 //speed that changes
+      this.speedY = 1
+      
+      this.originX = x//starting position
+      this.originY = y
+      this.chase_radius_squared = range //range to calculate if the enemy is outside the range 
+      this.tick = Math.floor(Math.random()*3)*5 //starts at a random point on the sprite sheet
+           	
+      this.image = document.getElementById("cloud")//image to use
+
+      this.render = function() { //render function
+      	this.check_Player_Range() //checks if the player is inside the range of the enemy
+        
+        ctx = levelArea.context;
+        ctx.drawImage(this.image,(Math.floor(this.tick/10)*32),0,this.width,this.height,this.x,this.y,32,32)//draw the image
+        this.tick = this.tick+1 //increase the tick this choose what part of the sprite sheet to draw
+        if(this.tick===40) { //if the tick reaches 40 then it will go out of the sprite sheet so I reset it
+          this.tick = 0
+      		}
+        }   
+      
+      this.check_Player_Range = function() { //checks if the player is in range 
+        
+        var dX = Player.x-this.originX //x distance to the player 
+        var dY = Player.y-this.originY //y distance to the player it can be nagtive because i use the value ^2 so it will always be positive anyway
+        
+        var dX2 = Math.pow(dX, 2) //for using the pathagorean theorum to determine if the player is out of range 
+        var dY2 = Math.pow(dY, 2)
+        
+        if (dX2+dY2 < this.chase_radius_squared) { //if the sum of the distance x squared and distance y squared is smaller than the radius squared  
+          this.chasePlayer() //call the chasePlayer function
+        	}
+        else { //if it's not if the player is not in the range of the enemy the enemy moves back to the origin
+          this.retreat() 
+        	}
+      	}
+        
+      this.chasePlayer = function() {    //moves enemy toward the player it gets slower as it moves toward the player 
+        this.y = this.y+((Player.y-this.y)/40*this.speedY)
+        this.x = this.x+((Player.x-this.x)/40*this.speedX)
+        this.collision() //checks for a collision between the enemy and the player 
+      	} 
+        
+      this.retreat = function() { //moves enemy toward the origin 
+        this.y = this.y+((this.originY-this.y)/40*this.speedY)
+        this.x = this.x+((this.originX-this.x)/40*this.speedX)
+      	} 
+        
+      this.collision = function() {          
+             if (this.x+this.width>Player.x && this.x<Player.x+Player.width && this.y+this.height>Player.y && this.y<Player.y + Player.height ) {       	
+               Player.x = Player.startX //send player to the start
+               Player.y = Player.startY
+               Player.deathNum = Player.deathNum + 1 //adds a death
+               }  
+          	}          
+        }
+           
+      
+      function enemy_ranged(x,y, speedX, speedY) {
+        
+        //the position of the ranged enemy
+      	this.x = x;
+        this.y = y;
+        
+        //the width and height of the ranged enemy
+        this.height = 32;
+        this.width = 32;
+        
+        //the ranged enemy's projectile position
+        this.projectileX = this.x
+        this.projectileY = this.y
+      
+        //The projectile's height and width
+        this.projectileHeight = 32
+        this.projectileWidth = 32
+        
+        //The projectile's speed
+        this.speedX = speedX
+        this.speedY = speedY
+       	
+        //Determines which direction the sprite faces
+        if (speedY > 0) {this.image = document.getElementById("barrelD");} //down
+        else if (speedY < 0) {this.image = document.getElementById("barrelU");} //up
+        else if (speedX > 0) {this.image = document.getElementById("barrelR");} //right
+        else if (speedX < 0) {this.image = document.getElementById("barrelL");} //left
+        
+        
+        this.increment = 1
+        this.image2 = document.getElementById("projectile");
+        this.tick = 0
+        
+        this.render = function() {
+        	ctx = levelArea.context;
+          ctx.drawImage(this.image, this.x, this.y, this.width, this.height)   
+        	}
+             
+        this.renderProjectile = function() {
+        	
+          this.moveProjectile()
+        	ctx = levelArea.context; 
+          ctx.drawImage(this.image2,0,(Math.floor(this.tick/5)*32),32,32,this.projectileX,this.projectileY,32,32)
+            this.tick = this.tick+this.increment
+            if(this.tick===20) { //
+              this.tick = 0
+              }
+          }    
+          
+          //collision with walls
+     		this.moveProjectile = function() {
+          this.projectileY = this.projectileY+this.speedY
+          this.projectileX = this.projectileX+this.speedX
+          
+          var x = Math.floor(this.projectileX / 32) 
+          var y = Math.floor(this.projectileY / 32)
+          
+            if (this.speedY !== 0) {
+            	if (((this.y+this.height)>this.projectileY && (this.y < this.projectileY+this.projectileHeight))!==true) {
+              		if (level[y][x] == '1' || level[y][x + 1] == '1' && this.y < (y + 1) * 32 && this.speedY < 0) {                  
+                    this.projectileX = this.x
+                    this.projectileY = this.y
+                    }
+                
+                else if ((level[y+1][x] == '1' || level[y+1][x] == '1') && this.y < (y + 1) * 32) {
+                  this.projectileX = this.x
+                  this.projectileY = this.y
+                  } 
+                }
+              }
+              
+						
+            else if (this.speedX !== 0) {
+            if (((this.x+this.width)>this.projectileX && (this.x < this.projectileX+this.projectileWidth))!==true) {
+                if (level[y][x + 1] == '1' || level[y][x] == '1' && (this.x + 32) > x * 32) { 
+                  this.projectileX = this.x
+                  this.projectileY = this.y
+                  }
+
+                else if (level[y][x] == '1' || level[y + 1][x] == '1' && (this.x) < (x+1) * 32 && this.speedX < 0) {
+                  this.projectileX = this.x
+                  this.projectileY = this.y
+                  } 
+                }
+              }
+          
+             
+					
+          //hit box with player
+           if (this.projectileX+this.projectileWidth>Player.x && this.projectileX<Player.x+Player.width && this.projectileY+this.projectileHeight>Player.y && this.projectileY<Player.y + Player.height ) {       
+        		Player.x = Player.startX
+            Player.y = Player.startY
+            Player.deathNum = Player.deathNum + 1
+          	}  
+        	}
+        }
+             
+     
+      //The class for walls
+      function obstacle(x, y) { //these are walls 
+        
+        this.x = x; //position of wall
+        this.y = y;
+        
+        this.width = 32; //dimensions of wall
+        this.height = 32;
+        
+        this.image = document.getElementById("brick") //image to use
+        
+        this.render = function() { //render
+          ctx = levelArea.context;
+					ctx.drawImage(this.image, this.x,this.y)
+        	}
+      	}
+      
+      function oneWay_obstacle(x, y, v) { //these are ledges 
+        this.x = x; //position
+        this.y = y;
+        this.width = 32; //dimensions 
+        this.height = 32;
+        
+        this.image;
+        
+        //Determines which way the edge faces
+        if(v === 1 ) {this.image = document.getElementById("ledgeU")} //up
+        else if(v === 2 ) {this.image = document.getElementById("ledgeD")} //down
+        else if(v === 3 ) {this.image = document.getElementById("ledgeR")} //right
+        else if(v === 4 ) {this.image = document.getElementById("ledgeL")} //left
+        
+        this.render = function() { //render
+          ctx = levelArea.context;
+					ctx.drawImage(this.image, this.x,this.y)
+        	}
+      	}
+      
+      //The oil spill enemy class
+      function enemy(x,y,speed_X, speed_Y) {
+        
+        //Enemy's position, enemy's occupy a 2x2 square of 
+        this.x = x + 16
+        this.y = y + 16
+        
+        //enemy's hieght and width
+        this.width = 32
+        this.height = 32
+        
+        //Enemy's speed
+        this.speedX = speed_X
+        this.speedY = speed_Y
+
+        this.image = document.getElementById("enemy");
+
+        
+        this.render = function(){
+          	this.x = this.x + this.speedX;
+          	this.y = this.y + this.speedY;
+          	this.move()
+            
+            ctx = levelArea.context;
+            ctx.drawImage(this.image, this.x, this.y)
+          	}
+
+        this.move = function(){
+          
+          var x = Math.floor(this.x / 32) //finds the lowest block on the array the player will be 
+          var y = Math.floor(this.y / 32)
+                 
+          //collision with walls
+          if (this.speedX !== 0) {
+            if (level[y][x + 1] == '1' || level[y + 1][x + 1] == '1' && (this.x + 32) > x * 32 && this.speedX > 0) { 
+              this.x = this.x - this.speedX + ((x * 32) - (this.x - this.speedX)) - .001 //move it back 
+              this.speedX = this.speedX*-1
+              } 
+            else if (level[y][x] == '1' || level[y + 1][x] == '1' && (this.x) < (x+1) * 32 && this.speedX < 0) {
+              this.x = this.x - this.speedX + (((x + 1) * 32) - (this.x - this.speedX)) + .001 //move it back
+              this.speedX = this.speedX*-1
+              }
+          }
+          
+          else if(this.speedY !== 0) {
+            if (level[y + 1][x] == '1' || level[y + 1][x + 1] == '1' && (this.y + 32) > y * 32 && this.speedY > 0) { //top 
+              this.y = this.y - this.speedY + ((y * 32) - (this.y - this.speedY)) - .001
+              this.speedY = this.speedY*-1
+              
+              } 
+            else if (level[y][x] == '1' || level[y][x + 1] == '1' && this.y < (y + 1) * 32 && this.speedY < 0) {
+              this.y = this.y - this.speedY + (((y + 1) * 32) - (this.y - this.speedY)) + .001
+              this.speedY = this.speedY*-1
+              }
+          	}
+          
+
+					
+          //hit box with player
+           if (this.x+this.width>Player.x && this.x<Player.x+Player.width && this.y+this.height>Player.y && this.y<Player.y + Player.height ) {       	
+        		Player.x = Player.startX
+            Player.y = Player.startY
+            Player.deathNum = Player.deathNum + 1
+          	}         
+      		}
+      	}
+    
+           
+      function objective(x, y) { //this is garbage -Daniel
+        this.x = x;
+        this.y = y;
+        this.width = 32; //dimensions -Daniel
+        this.height = 32;
+        
+        this.image = document.getElementById("garbage");     
+        
+        this.render = function(){
+            ctx = levelArea.context;
+            ctx.drawImage(this.image, this.x, this.y)
+          	}
+      	}
+      
+      
+      function ground(x, y) { //this is garbage -Daniel
+        this.x = x;
+        this.y = y;
+        this.width = 32; //dimensions -Daniel
+        this.height = 32;
+        
+        this.image = document.getElementById("grass")
+        
+        this.render = function() { //render -Daniel
+          ctx = levelArea.context;
+          ctx.drawImage(this.image, this.x,this.y)
+        	}
+      	}
+        
+
+      function component(width, height, color, x, y, speed) { // sets up the component fucntion with a width, height, color , x coord, and y coord -Emily
+        this.width = 32; // sets the width as the width input in the function -Emily
+        
+        this.height = 32; // sets the height as the height input in the function -Emily
+        
+        this.speedX = 0; // sets the horizontal speed as 0 -Emily
+        
+        this.speedY = 0; // sets the vertical speed as 0 -Emily
+        
+        this.garbageCount = 0
+        
+        this.deathNum = 0
+        
+        this.speed = speed;
+        
+        for (let i = 0; i < 30; i++) {
+        
+          for (let j = 0; j < 30; j++) {
+        	
+            if(level[i][j] === 's') {
+            
+              this.startX = (j*32)
+              
+              this.startY = (i*32)
+          		}
+          	}
+        	}
+        
+        this.x = this.startX; // sets the x as the x input in the function -Emily
+        this.y = this.startY; // sets the y as the y input in the function -Emily
+        
+        this.image = document.getElementById("character");
+
+        this.render = function() {
+          if (this.speedX === 0 && this.speedY === 0) {
+          	this.tick = 0
+          	}
+
+          ctx = levelArea.context;
+          ctx.drawImage(this.image,(Math.floor(this.tick/10)*32),0,this.width,this.height,this.x,this.y,32,32)
+          this.tick = this.tick+1
+          if(this.tick===40) { //
+            this.tick = 0
+            }
+        }
+        
+     
+        /////////////////////we can put our collision function here it knows the list for level 1 and player x
+        this.collision = function() { //collisions when travelling horizontally
+          var x = Math.floor(this.x / 32) //finds the lowest block on the array the player will be 
+          var y = Math.floor(this.y / 32)      
+              
+          //this does x axis collisions
+          if(this.speedX !== 0) {
+            if (level[y][x + 1] == '1' || level[y + 1][x + 1] == '1' && (this.x + 32) > x * 32 && this.speedX > 0) { 
+              this.x = this.x - this.speedX + ((x * 32) - (this.x - this.speedX)) - .001 //move it back 
+              this.speedX = 0
+              } 
+            else if (level[y][x] == '1' || level[y + 1][x] == '1' && (this.x) < (x+1) * 32 && this.speedX < 0) {
+              this.x = this.x - this.speedX + (((x + 1) * 32) - (this.x - this.speedX)) + .001 //move it back
+              this.speedX = 0
+              }
+          	}
+                                
+          //this does y axis collisions
+          if(this.speedY !== 0) {
+            if (level[y + 1][x] == '1' || level[y + 1][x + 1] == '1' && (this.y + 32) > y * 32 && this.speedY > 0) { //top 
+              this.y = this.y - this.speedY + ((y * 32) - (this.y - this.speedY)) - .001
+              this.speedY = 0              
+              } 
+            else if (level[y][x] == '1' || level[y][x + 1] == '1' && this.y < (y + 1) * 32 && this.speedY < 0) {
+              this.y = this.y - this.speedY + (((y + 1) * 32) - (this.y - this.speedY)) + .001
+              this.speedY = 0
+              }
+          	}
+                      
+                  
+          //collision with one way walls
+          if(this.speedX !== 0) {
+            if (level[y][x + 1] == 'L' || level[y + 1][x + 1] == 'L' && (this.x + 32) > x * 32 && this.speedX > 0) { 
+              this.x = this.x - this.speedX + ((x * 32) - (this.x - this.speedX)) - .001 //move it back 
+              this.speedX = 0
+              } 
+            else if (level[y][x] == 'R' || level[y + 1][x] == 'R' && (this.x) < (x+1) * 32 && this.speedX < 0) {
+              this.x = this.x - this.speedX + (((x + 1) * 32) - (this.x - this.speedX)) + .001 //move it back
+              this.speedX = 0
+              }
+          	}
+                                
+          //this does y axis collisions
+          if(this.speedY !== 0) {
+            if (level[y + 1][x] == 'U' || level[y + 1][x + 1] == 'U' && (this.y + 32) > y * 32 && this.speedY > 0) { //top 
+              this.y = this.y - this.speedY + ((y * 32) - (this.y - this.speedY)) - .001
+              this.speedY = 0              
+              } 
+            else if (level[y][x] == 'D' || level[y][x + 1] == 'D' && this.y < (y + 1) * 32 && this.speedY < 0) {
+              this.y = this.y - this.speedY + (((y + 1) * 32) - (this.y - this.speedY)) + .001
+              this.speedY = 0
+              }
+          	}
+            
+            
+          
+          reset = false
+          if (level[y][x + 1] == '2' || level[y + 1][x + 1] == '2' && (this.x + this.width) >= x * 32) { //these are straight from the collision function -Daniel
+            if (level[y][x + 1] == '2') { //checks each of the possible locations individually since there's 2 in the if statement above -Daniel 
+              level[y][x + 1] = '0'; //changes the value of that place on the level aray -Daniel
+              reset = true //this makes things easier -Daniel
+            	} 
+            else if (level[y + 1][x + 1] == '2') { //these dont need explaining they're all basically the same thing -Daniel
+              level[y + 1][x + 1] = '0';
+              reset = true
+            	}
+            }
+
+          else if (level[y][x] == '2' || level[y + 1][x] == '2' && (this.x + this.width) <= (x+1) * 32) {
+            if (level[y][x] == '2') {
+              level[y][x] = '0';
+              reset = true
+            	} 
+            else if (level[y + 1][x] == '2') {
+              level[y + 1][x] = '0';
+              reset = true
+            	}
+          	}
+          
+          else if (level[y + 1][x] == '2' || level[y + 1][x + 1] == '2' && (this.y + 32) > y * 32 && this.speedY > 0) { //top 
+             	if(level[y+1][x]== '2') {
+                level[y+1][x] = '0'
+                reset = true
+                }
+         	
+              else if(level[y+1][x+1]== '2') {
+                level[y+1][x+1]
+                reset = true
+                }      
+              } 
+          else if (level[y][x] == '2' || level[y][x + 1] == '2' && this.y < (y + 1) * 32 && this.speedY < 0) {
+         	
+              if(level[y][x]== '2') {
+                level[y][x] = '0' 
+                reset = true
+                }
+
+              else if(level[y][x+1]== '2') {
+                level[y][x+1] = '0'
+                reset = true
+              }
+          }
+
+            if (reset === true) { //resets things -Daniel
+              //this happens every time the same way whenever the player goes over garbage -Daniel
+              this.garbageCount = this.garbageCount + 1 //increases the players "score" later we could use this to go to the next level or by the length of the array of garbage blocks -Daniel
+              garbageList = [];
+              console.log(`Player has collected ${this.garbageCount} pieces of garbage`)
+              for (let i = 0; i < 30; i++) { //loops enough times to make remake the garbage list -Daniel
+                for (let j = 0; j < 30; j++) {
+                  if (level[i][j] === '2') {
+                    garbage = new objective(j * 32, i * 32); //remakes the list of garbage -Daniel
+                    garbageList.push(garbage); //adds it to list -Daniel
+                  }
+                }
+              }
+              
+              if (garbageList.length === 0) {
+                  changeLevel()
+                	}
+            }
+          }
+          //this does collisions with garbage
+        
+
+        this.newPos = function() { // function that determines the new position for the component -Emily
+          if (levelArea.keys && levelArea.keys[65]) {
+            Player.speedX = -Player.speed;
+          	} // if the A key is pressed horizontal speed is -1 -Emily
+          else if (levelArea.keys && levelArea.keys[68]) {
+            Player.speedX = Player.speed;
+          	} // if the D key is pressed horizontal speed is +1 -Emily
+          else if (levelArea.keys && levelArea.keys[87]) {
+            Player.speedY = -Player.speed;
+          	} // if the W key is pressed vertical speed is -1 -Emily
+          else if (levelArea.keys && levelArea.keys[83]) {
+            Player.speedY = Player.speed;
+          	} // if the S key is pressed vertical speed is +1 -Emily
+          
+          this.x += this.speedX; // moves according to speed and x position -Emily
+          this.y += this.speedY; // moves according to speed and y postion -Emily
+        	}		
+      }
+      
+
+  
+         var endScreen = function() {
+        
+      	  ctx = levelArea.context;
+        	ctx.fillStyle = 'black';
+          ctx.fillRect(0,0,1060,1060);
+           
+          ctx.font = "40px Arial";
+          ctx.fillStyle = 'white';
+					ctx.fillText('CONGRATULATIONS ON SAVING THE WORLD!!!',20,60);
+          
+          ctx.font = "72px Arial";
+          ctx.fillStyle = 'white';
+					ctx.fillText(Player.garbageCount,450,680);
+        
+        	ctx.font = "72px Arial";
+          ctx.fillStyle = 'red';
+					ctx.fillText(-Player.deathNum,426,770);
+        
+          ctx = levelArea.context;
+        	ctx.fillStyle = 'white';
+          ctx.fillRect(400,800,200,20);
+           
+           globe_image = document.getElementById("globe");     
+           ctx = levelArea.context;
+           ctx.drawImage(globe_image, 130, 100, 640, 420)  
+           
+           
+          
+        	let score = Player.garbageCount - Player.deathNum;
+           
+          if (score >= 0){
+            ctx.font = "72px Arial";
+            ctx.fillStyle = 'white';
+            ctx.fillText(score,450,900);
+          }
+
+          else if (score <0){
+            ctx.font = "72px Arial";
+            ctx.fillStyle = 'red';
+            ctx.fillText(score,424,900);
+            }
+          }
+      
+      
+      
+      
+      let blockList = [];
+      let garbageList = [];
+      let enemyList = [];
+      let teleList = [];
+      let ranged_enemyList = [];
+      let chasing_enemyList = [];
+      let oneWay_wallList = [];
+      
+      var switchLevel = true
+      var levelNum = 0
+      
+      var factNum = -1;
+      var facts =  ["Only 1 in 5 plastic bottles are recycled.","Americans consume over 8.6 billion gallons of bottled water.","Plastic water bottles can take between 400 and 1,000 years to decompose.","One water pitcher filter can effectively replace as much as 300 standard 16.9-ounce bottles.","If nothing changes, by 2025 there will be one tonne of plastic for every three tonnes of fish in the ocean.","The total carbon footprint of one 500 mL bottle of water in North America is 82.8g of CO2.","The production of bottled water uses more than 17 million barrels of oil per year, enough to fuel 1.3 million cars."];
+      
+      var changeLevel = function() {
+        factNum = factNum+1;
+        level = levels[levelNum]
+        levelNum = levelNum+1;
+        
+        blockList = [];
+        garbageList = [];
+        enemyList = [];
+        teleList = [];
+        ranged_enemyList = [];
+        chasing_enemyList = [];
+        groundList = [];
+				oneWay_wallList = [];
+        
+        for (let i = 0; i < 30; i++) {
+          for (let j = 0; j < 30; j++) {
+            if (level[i][j] === 'u') {
+              enemyR_toAdd = new enemy_ranged(j * 32, i * 32, 0, -3);
+              ranged_enemyList.push(enemyR_toAdd);
+              level[i][j] = '1'
+            	}
+
+            else if (level[i][j] === 'd') {
+              enemyR_toAdd = new enemy_ranged(j * 32, i * 32, 0, 3);
+              ranged_enemyList.push(enemyR_toAdd);
+              level[i][j] = '1'
+            	}
+              
+            else if (level[i][j] === 'r') {
+              enemyR_toAdd = new enemy_ranged(j * 32, i * 32, 3, 0);
+              ranged_enemyList.push(enemyR_toAdd);
+              level[i][j] = '1'
+           	 	}
+            
+            else if (level[i][j] === 'l') {
+              enemyR_toAdd = new enemy_ranged(j * 32, i * 32, -3, 0);
+              ranged_enemyList.push(enemyR_toAdd);
+              level[i][j] = '1'
+            	} 
+              
+            if (level[i][j] !== '1') {
+              grass = new ground(j * 32, i * 32);
+              groundList.push(grass);
+            	} 
+             
+            if (level[i][j] === '1') {
+              block = new obstacle(j * 32, i * 32);
+              blockList.push(block);
+            } 
+            
+            else if (level[i][j] === 'U') {
+              oneWayWall = new oneWay_obstacle(j * 32, i * 32, 1);
+              oneWay_wallList.push(oneWayWall);
+            } 
+            else if (level[i][j] === 'D') {
+              oneWayWall = new oneWay_obstacle(j * 32, i * 32, 2);
+              oneWay_wallList.push(oneWayWall);
+            } 
+            else if (level[i][j] === 'R') {
+              oneWayWall = new oneWay_obstacle(j * 32, i * 32, 3);
+              oneWay_wallList.push(oneWayWall);
+            } 
+            else if (level[i][j] === 'L') {
+              oneWayWall = new oneWay_obstacle(j * 32, i * 32, 4);
+              oneWay_wallList.push(oneWayWall);
+            } 
+            
+            else if (level[i][j] === 'i') {
+              block = new obstacle(j * 32, i * 32);
+              blockList.push(block);
+            } 
+            
+
+            else if (level[i][j] === '2') {
+              garbage = new objective(j * 32, i * 32);
+              garbageList.push(garbage);
+            }
+            else if (level[i][j] === 'x') {
+              enemy_toAdd = new enemy(j*32, i*32, 3, 0);
+              enemyList.push(enemy_toAdd)
+            }
+            else if (level[i][j] === 'y') {
+              enemy_toAdd = new enemy(j*32, i*32, 0, 3);
+              enemyList.push(enemy_toAdd)
+            }
+
+            else if (level[i][j] === 'c') {
+              enemy_toAdd = new chasing_enemy(j * 32, i * 32, 25600); //5 tile range/radius
+              chasing_enemyList.push(enemy_toAdd);
+            } 
+
+            else if (level[i][j] === 'C') {
+              enemy_toAdd = new chasing_enemy(j * 32, i * 32, 65536); //8 tile range/radius
+              chasing_enemyList.push(enemy_toAdd);
+            } 
+            
+            else if (level[i][j] === 's') {
+              Player.startX = j*32
+              Player.startY = i*32
+            } 
+
+            
+            }	
+          }
+         
+        Player.x = Player.startX
+        Player.y = Player.startY
+      }
+				
+      
+      
+      var gameRender = function() {//renders the entire game
+        	
+          levelArea.clear(); // clears the level area -Emily
+          Player.speedX = 0; // speed is reset to 0 -Emily
+          Player.speedY = 0; // speed is reset to 0 -Emily 
+
+        	for (let ii = 0; ii < groundList.length; ii++) {//renders blocks
+            groundList[ii].render();
+            }
+        	
+          for (let ii = 0; ii < oneWay_wallList.length; ii++) {//renders blocks
+            oneWay_wallList[ii].render();
+            }
+        
+          for (let ii = 0; ii < garbageList.length; ii++) { //renders garbage 
+            garbageList[ii].render();
+            }
+          
+        	Player.newPos() // Player is put at it's new postion -Emily
+          Player.collision()
+          Player.render();
+         	
+          for (let ii = 0; ii < enemyList.length; ii++) { //renders garbage 
+            enemyList[ii].render();
+            enemyList[ii].move();
+            }   
+
+          for (let ii = 0; ii < ranged_enemyList.length; ii++) { //renders garbage         
+            ranged_enemyList[ii].renderProjectile();
+            }
+
+          for (let ii = 0; ii < blockList.length; ii++) {//renders blocks
+            blockList[ii].render();
+            }
+
+          for (let ii = 0; ii < ranged_enemyList.length; ii++) { //renders garbage         
+            ranged_enemyList[ii].render();
+            }
+
+          for (let ii = 0; ii < chasing_enemyList.length; ii++) { //renders garbage         
+            chasing_enemyList[ii].render();
+            }   
+      
+      
+      ctx.fillStyle = '#6C6C6C'        
+      ctx.fillStyle = 'rgb(108, 108, 108)'
+      ctx.fillRect(0,960,960,100)
+
+      
+      ctx.fillStyle = "White";   
+			ctx.font = "18px Arial";
+      ctx.fillText(`Fact: ${facts[factNum]}`,20,1030);
+    	
+      ctx.fillStyle = "White";   
+			
+      ctx.font = "30px Arial";			
+      ctx.fillText(`Garbage Collected: ${Player.garbageCount}`,20,1000);
+			ctx.fillText(`Deaths: ${Player.deathNum}`,760,1000);      
+      }
+      
+      
+  //spiral level
+let level = 	[
+	    				['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','d','d','1'],
+            	['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','d','d','1','0','0','1'],
+							['1','0','0','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1'],
+            	['1','0','0','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','d','d','1','0','0','1','0','0','1'],
+            	['1','0','0','1','0','0','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','1'],
+	        		['1','0','0','1','0','0','1','0','0','1','1','1','1','1','1','1','1','1','d','d','1','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','r','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','1','0','0','1'],
+            	['1','0','0','1','0','0','1','0','0','r','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','1','0','0','1','1','1','1','1','1','0','0','1','0','0','1','0','0','1','0','0','1'],
+            	['1','0','0','1','0','0','1','0','0','1','0','0','1','2','2','2','2','2','2','2','1','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','1','0','0','1','2','2','2','2','2','2','2','1','0','0','1','0','0','1','0','0','1'],
+	        		['1','0','0','1','0','0','1','0','0','1','0','0','1','2','2','2','2','2','2','2','1','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','1','0','0','1','2','2','2','2','2','2','2','1','0','0','1','0','0','1','0','0','1'],
+            	['1','0','0','1','0','0','1','0','0','1','0','0','i','i','i','i','1','1','1','1','1','0','0','1','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','l','0','0','1','0','0','1'],
+            	['1','0','0','1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','l','0','0','1','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','1','u','u','i','i','i','i','1','1','1','1','1','1','1','1','0','0','1','0','0','1'],
+	        		['1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l','0','0','1'],
+							['1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l','0','0','1'],
+            	['1','0','0','1','0','0','1','u','u','1','1','1','i','i','i','i','1','1','1','1','1','1','1','1','1','1','1','0','0','1'],
+							['1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+	        		['1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','1','u','u','1','1','1','1','1','1','i','i','i','i','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','s','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','u','u','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+							]    
+      
+      //bunch of y level
+let level1 = 	[
+	    				['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            	['1','s','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','2','2','2','1'],
+							['1','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','2','2','2','1'],
+	       			['1','1','1','0','0','0','0','0','0','1','1','0','0','0','0','0','0','0','1','1','0','0','0','0','0','0','1','1','1','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','c','0','0','0','0','0','c','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','C','0','0','0','0','0','1'],
+	   		      ['1','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','1'],
+							['1','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','1'],
+            	['1','0','0','0','0','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','C','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','C','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','1','1','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','2','2','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0','0','0','0','2','2','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','0','1'],
+            	['1','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','y','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+							]
+
+let level2 = 	[
+	    				['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            	['1','s','0','0','0','0','0','0','1','1','1','1','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','1'],
+  						['1','0','0','0','0','0','0','0','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+  						['1','1','1','1','1','1','0','0','1','1','1','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','0','0','R','2','0','l','1','1','r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+	        		['1','0','0','0','0','R','2','0','l','1','1','1','0','y','y','0','0','y','y','0','0','y','y','0','0','y','y','0','0','1'],
+							['1','0','0','0','0','R','2','0','l','1','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','1','0','0','0','R','2','0','L','l','1','1','0','0','1','1','0','0','1','1','0','0','1','1','0','0','1','D','D','1'],
+							['1','1','0','0','0','R','2','0','L','l','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','1','0','0','0','R','2','0','L','l','1','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','1','1','0','0','R','2','0','L','0','l','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','1','1','0','0','R','2','0','L','0','l','1','0','0','0','0','0','0','0','c','0','0','0','0','0','c','0','0','0','1'],
+							['1','1','1','0','0','R','2','0','L','0','l','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','1','1','1','0','R','2','0','L','0','0','l','0','0','0','0','0','0','0','0','0','2','2','2','0','0','0','0','0','1'],
+							['1','1','1','1','0','R','2','0','L','0','0','l','0','0','0','0','0','0','0','0','0','2','2','2','0','0','0','0','0','1'],
+            	['1','1','1','1','0','R','2','0','L','0','0','l','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','1','1','1','1','1','0','0','1','1','1','1','0','0','0','0','0','0','0','c','0','0','0','0','0','c','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','1','1','1','1','1','1','1','1','1','0','0','0','0','0','1','1','1','1','1','1','1','1','1','1','U','U','1'],
+							['1','0','0','2','2','1','2','2','2','y','0','0','0','0','0','0','0','1','0','0','0','y','0','0','0','y','0','2','2','1'],
+            	['1','0','0','2','2','1','2','2','2','y','y','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','2','2','1'],
+							['1','0','0','1','1','1','2','2','2','0','y','y','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','2','2','1'],
+	        		['1','0','0','1','1','1','2','2','2','0','0','y','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','2','2','1'],
+							['1','0','0','2','2','1','2','2','2','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','2','2','1'],
+            	['1','0','0','2','2','1','1','1','1','1','1','1','0','0','0','0','0','1','0','0','x','0','0','0','0','0','0','2','2','1'],
+							['1','0','0','1','1','1','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','2','2','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','1','x','0','0','0','y','0','0','0','y','0','0','0','2','2','l'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','2','2','l'],
+							['1','u','u','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+							]
+    
+      //daniel's level
+   	let level3 = 	[
+                  ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+                  ['1','s','0','1','0','2','2','2','0','y','0','1','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','l'],
+                  ['1','0','0','1','0','2','2','2','0','0','0','1','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','l'],
+                  ['1','0','0','1','x','0','0','0','0','0','0','1','0','0','1','0','0','1','0','0','0','0','1','0','0','0','0','0','0','1'],
+                  ['1','0','0','1','0','0','0','0','0','0','0','1','0','0','1','0','0','1','1','1','0','0','1','0','0','0','2','0','0','1'],
+                  ['1','0','0','0','0','0','0','0','0','0','0','L','0','0','1','0','0','0','0','l','0','0','1','0','0','0','0','2','0','1'],
+                  ['1','0','0','0','0','0','0','0','0','0','0','L','0','0','1','0','0','1','1','1','0','0','1','0','0','0','2','0','0','1'],
+                  ['1','U','U','U','U','1','0','0','1','0','0','1','0','0','1','0','0','1','1','1','0','0','1','0','0','0','0','2','0','1'],
+                  ['1','0','0','0','0','L','0','0','1','0','0','R','0','0','1','0','0','0','0','0','0','0','1','0','0','0','2','0','0','1'],
+                  ['1','2','2','2','0','L','0','0','1','0','0','R','0','0','1','0','0','0','0','0','0','0','1','0','0','0','0','2','0','1'],
+                  ['1','2','2','2','0','L','0','0','1','0','0','1','1','1','1','1','1','0','0','1','D','D','1','1','1','1','U','U','1','1'],
+                  ['1','1','D','D','1','1','0','0','1','0','0','i','2','r','0','0','0','0','0','1','2','2','0','0','0','0','0','0','0','1'],
+                  ['1','r','0','0','0','0','0','0','1','0','0','i','i','r','0','0','0','0','0','1','2','2','0','0','0','0','0','0','0','1'],
+                  ['1','r','0','0','0','0','0','0','1','0','0','0','0','1','0','0','1','1','1','1','0','0','1','1','1','0','2','2','0','1'],
+                  ['1','1','1','0','0','1','1','1','1','0','0','0','0','1','0','0','1','1','1','1','0','0','1','1','1','0','2','2','0','1'],
+                  ['1','2','2','0','0','L','0','0','0','0','0','0','0','1','2','2','0','0','0','0','0','0','0','0','l','0','0','0','0','1'],
+                  ['1','2','2','0','0','L','0','0','0','0','0','0','0','1','2','2','0','0','0','0','0','0','0','0','l','0','0','0','0','1'],
+                  ['1','0','0','1','1','1','1','1','D','D','1','1','1','1','1','1','1','1','1','1','0','0','1','1','1','1','u','u','1','1'],
+                  ['1','0','0','0','0','0','0','1','y','0','R','0','0','1','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','1'],
+                  ['r','0','0','0','0','0','0','1','0','0','R','0','0','1','0','0','2','2','0','l','0','0','0','0','0','0','0','0','0','1'],
+                  ['r','0','0','0','0','0','0','1','0','0','R','0','0','1','0','0','2','2','0','l','0','0','0','0','0','0','0','0','0','1'],
+                  ['1','1','1','1','1','0','0','1','0','0','R','0','0','1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','1'],
+                  ['1','0','0','0','0','0','0','1','0','0','R','0','0','0','0','0','R','0','0','0','0','0','0','0','0','0','0','0','c','1'],
+                  ['1','x','0','0','0','0','0','1','0','0','R','0','0','0','0','0','R','0','0','0','0','0','0','0','2','2','0','0','c','1'],
+                  ['1','x','0','0','0','0','0','1','0','0','R','0','0','0','0','0','R','0','0','0','0','0','0','0','2','2','0','0','c','1'],
+                  ['1','0','0','0','0','0','0','1','0','0','R','0','0','1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','c','1'],
+                  ['1','0','0','0','0','0','0','1','0','0','R','0','0','r','0','0','2','2','0','1','0','0','0','0','0','0','0','0','0','1'],
+                  ['1','0','2','2','2','2','0','R','0','0','R','0','0','r','0','0','2','2','0','1','0','0','0','0','0','0','0','0','0','1'],
+                  ['1','0','2','2','2','2','0','R','0','0','R','0','0','1','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','1'],
+                  ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+               	  ]
+    
+
+//hani's level
+  let level5 = [
+    
+								['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+                ['1','s','0','0','0','2','0','0','0','1','0','0','0','0','0','2','2','y','0','2','2','0','0','0','0','0','c','2','2','1'],
+                ['1','0','0','2','0','0','0','2','0','1','0','0','0','0','0','2','2','0','0','2','2','0','0','0','0','0','0','2','2','1'],
+                ['1','1','1','1','1','1','1','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','1'],
+                ['1','0','0','0','0','0','0','2','0','l','0','2','1','0','0','2','2','0','0','2','2','0','0','0','0','0','0','0','l','1'],
+                ['1','0','2','0','0','0','0','0','0','l','0','0','1','0','0','2','2','0','0','2','2','0','0','0','0','0','0','0','l','1'],
+                ['1','0','0','0','0','0','0','0','2','l','2','0','1','1','1','1','1','1','1','1','1','0','0','1','1','1','1','1','1','1'],
+                ['1','0','0','1','1','1','1','1','1','1','0','2','1','r','0','0','0','0','0','0','L','0','0','0','0','0','0','0','0','1'],
+                ['r','0','2','0','0','0','0','2','0','0','0','0','1','r','0','0','0','0','0','0','L','0','0','0','0','0','0','0','0','1'],
+                ['r','0','0','0','2','0','0','0','0','2','0','0','1','1','1','1','1','1','2','2','1','1','1','1','0','0','1','U','U','1'],
+                ['1','1','1','1','1','1','1','1','1','1','u','u','1','1','1','1','1','1','2','2','1','1','1','1','0','0','1','2','2','1'],
+                ['1','0','0','0','0','0','0','0','0','2','2','2','2','0','0','0','0','l','0','0','0','0','0','1','0','0','1','2','2','1'],
+                ['1','0','0','0','0','0','0','0','0','2','2','2','2','0','0','0','0','l','0','0','0','0','0','0','0','0','R','0','0','1'],
+                ['1','0','0','0','0','0','0','0','0','1','1','1','1','1','d','d','1','1','1','1','1','0','0','0','0','0','R','0','0','1'],
+                ['1','0','0','2','2','2','2','0','0','1','2','2','1','1','0','0','0','0','0','l','1','0','0','1','u','u','1','1','1','1'],
+                ['1','0','0','2','2','2','2','0','0','1','2','2','1','1','0','0','0','0','0','l','1','0','0','0','0','0','y','y','0','1'],
+                ['1','0','0','2','2','2','2','0','0','L','0','0','1','1','0','0','1','0','0','1','1','0','0','0','0','0','0','0','0','1'],
+                ['1','C','0','2','2','2','2','0','0','L','0','0','1','1','2','2','1','0','0','1','1','1','1','1','1','1','2','0','0','1'],
+                ['1','0','0','0','0','0','0','0','0','1','0','0','1','1','2','2','1','0','0','1','0','0','0','0','0','1','0','0','2','1'],
+                ['1','0','0','0','0','0','0','0','0','1','0','0','1','1','0','0','1','0','0','1','0','0','0','0','0','1','0','0','0','1'],
+                ['1','0','0','0','0','0','0','0','0','1','0','0','2','2','0','0','l','0','0','0','0','0','1','0','0','1','2','0','0','1'],
+                ['1','0','0','0','0','0','0','0','0','1','0','0','2','2','0','0','l','0','0','0','0','0','1','0','0','1','0','0','0','1'],
+                ['1','0','0','1','1','1','1','d','d','1','u','u','1','1','1','1','1','1','1','1','1','1','1','0','0','1','0','0','2','1'],
+                ['1','0','0','1','1','1','1','0','0','1','1','1','1','1','1','1','1','1','1','1','1','1','1','U','U','1','0','0','0','1'],
+                ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','R','2','2','2','0','2','0','1'],
+                ['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','R','2','2','2','0','0','0','1'],
+                ['1','U','U','1','1','1','1','D','D','1','U','U','U','1','1','U','U','1','1','U','U','1','1','0','0','1','U','U','U','1'],
+                ['1','0','0','2','2','0','0','0','2','2','0','0','0','2','2','0','0','2','2','0','0','2','2','0','0','1','0','0','0','1'],
+                ['1','0','0','2','2','0','0','0','2','2','0','0','0','2','2','0','0','2','2','0','0','2','2','0','0','1','0','0','0','1'],
+                ['1','1','1','1','1','1','1','1','1','1','u','u','u','1','1','u','u','1','1','u','u','1','1','u','u','1','1','1','1','1'],
+              	]
+  
+
+  // last level
+ let level6 = 	[
+                 ['1','1','1','1','1','1','1','1','1','d','d','1','1','1','1','1','1','1','1','d','d','1','1','1','1','1','1','1','1','1'],
+                 ['r','2','2','2','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','2','2','2','l'],
+                 ['r','2','2','2','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','2','2','2','l'],
+                 ['1','2','2','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','1','1','2','2','1'],
+                 ['1','0','0','1','c','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','c','1','0','0','1'],
+                 ['1','0','0','1','1','1','0','0','1','0','0','1','1','1','1','1','1','1','1','0','0','1','0','0','1','1','1','0','0','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','1','0','c','0','0','c','0','1','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','1','1','1','1','1','0','0','1','0','0','1','0','0','0','0','0','0','1','0','0','1','0','0','1','1','1','1','1','1'],
+                 ['1','y','0','0','0','0','0','0','1','x','0','y','0','0','0','0','0','y','0','x','0','1','0','0','0','0','0','y','0','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','0','0','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','1','1','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','1','1','1','1','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','1','s','0','1','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','1','0','0','1','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','1','D','D','1','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','2','2','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','2','2','0','0','1'],
+                 ['1','0','0','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','1','1','0','0','1'],
+                 ['1','y','0','0','0','0','0','0','1','x','0','y','0','0','0','0','0','y','0','x','0','1','0','0','0','0','0','y','0','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','1','1','1','1','1','0','0','1','0','0','1','0','0','0','0','0','0','1','0','0','1','0','0','1','1','1','1','1','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','1','0','c','0','0','c','0','1','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','0','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','0','1'],
+                 ['1','0','0','1','1','1','0','0','1','0','0','1','1','1','1','1','1','1','1','0','0','1','0','0','1','1','1','0','0','1'],
+                 ['1','0','0','1','c','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','c','1','0','0','1'],
+                 ['1','2','2','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','1','1','2','2','1'],
+                 ['r','2','2','2','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','2','2','2','l'],
+                 ['r','2','2','2','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','2','2','2','l'],
+                 ['1','1','1','1','1','1','1','1','1','u','u','1','1','1','1','1','1','1','1','u','u','1','1','1','1','1','1','1','1','1'],
+               ]
+            		
+ 
+//zig zag level
+let level4 = 	[
+	    				['1','1','1','1','1','1','1','1','1','1','1','1','1','1','d','d','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            	['1','0','0','s','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','y','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	       			['1','U','U','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','U','U','1'],
+            	['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','U','U','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','1','1','1','1','u','u','1','1','1','1','1','d','d','1','1','1','1','1','u','u','1','1','1','1','U','U','1'],
+            	['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	      		  ['1','U','U','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','U','U','1'],
+            	['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['r','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	      		  ['1','U','U','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','1','U','U','1','1','1','1','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+            	['1','y','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','l'],
+							['1','0','0','1','1','1','1','u','u','1','1','1','1','1','1','1','1','1','1','1','1','u','u','1','1','1','1','1','1','1'],
+	      		  ['1','0','0','0','0','2','2','2','2','0','y','0','0','2','2','2','2','0','y','0','0','2','2','2','2','2','2','2','2','1'],
+							['1','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','2','2','2','2','1'],
+            	['r','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','2','2','2','2','l'],
+              ['r','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','0','0','0','0','2','2','2','2','2','2','2','2','l'],
+              ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+              ]
+
+
+
+//cloud level
+let level8 = 	[
+	    				['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+            	['1','C','0','2','0','C','0','2','0','c','0','2','0','1','s','0','1','0','2','0','c','0','2','0','C','0','2','0','C','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','2','0','0','0','0','0','0','0','0','0','0','0','1','D','D','1','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+            	['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','c','2','0','2','2','0','2','c','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','C','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','C','1'],
+	        		['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','2','0','0','2','2','0','0','2','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','2','0','0','0','0','0','0','0','0','0','2','0','2','0','0','2','0','2','0','0','0','0','0','0','0','0','0','2','1'],
+							['1','2','0','0','0','0','0','0','0','0','0','2','0','2','0','0','2','0','2','0','0','0','0','0','0','0','0','0','2','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	       		  ['1','C','0','0','0','0','0','0','0','0','0','2','0','0','0','0','0','0','2','0','0','0','0','0','0','0','0','0','C','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','C','0','0','2','2','0','0','C','0','0','0','0','0','0','0','0','0','0','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+            	['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+							['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+	        		['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','C','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','C','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+	        		['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+							['1','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','2','1'],
+            	['1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'],
+							['1','C','0','2','0','C','0','2','0','C','0','2','0','2','2','2','2','0','2','0','C','0','2','0','C','0','2','0','C','1'],
+							['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1'],
+							]
+ 
+
+
+  		var levels = [level,level1,level2,level3,level4,level5,level6]
+			
+
+      
+      function updateLevelArea() { // function to update the level area -Emily 
+        
+        
+        // if there aren't any more levels goes to final screen with scores
+        if (levelNum === levels.length+1) {
+          endScreen()
+        }
+
+        
+        // game starts in menu
+        else if (menu === true){
+        
+        // renders the menu screen
+        ctx = levelArea.context;
+        ctx.drawImage(menuScreen,0,0)
+        
+        ctx.fillStyle = '#6C6C6C'        
+      	ctx.fillStyle = 'rgb(108, 108, 108)'
+      	ctx.fillRect(0,960,960,100)
+        
+        //if you hit enter exit menu and enter game
+        if (levelArea.keys && levelArea.keys[13]) {
+        menu = false;
+        game = true;
+        }
+        
+        }
+        
+        // runs the game
+        else if (game){
+				gameRender()
+        }
+  
+      
+      }
+      
+    </script>
+  </body>
+</html>
