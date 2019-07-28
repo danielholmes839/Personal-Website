@@ -5,3 +5,7 @@
 	margin-right: 3rem;
 	display: inline-block;
 }
+
+.link:hover {
+	color: #ffffff;
+}
