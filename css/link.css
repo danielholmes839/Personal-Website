@@ -1,4 +1,7 @@
 .link {
 	font-size: 16px;
 	font-weight: bold;
+	color: #ffffff;
+	margin-right: 3rem;
+	display: inline-block;
 }
